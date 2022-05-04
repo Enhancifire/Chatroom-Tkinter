@@ -12,13 +12,16 @@ server.listen()
 clients = []
 nicknames = []
 
+stop = False
+
 # Broadcasting
 def broadcast(message):
     for client in clients:
         client.send(message)
 
 def handle(client):
-    while True:
+    global stop
+    while not stop:
         try:
             message = client.recv(1024)
             print(f"{nicknames[clients.index(client)]} says {message}")
@@ -53,6 +56,9 @@ def receive():
             thread.start()
     except KeyboardInterrupt:
         print("Closing")
+        global stop
+        stop = True
+        return
 
 print(f"Server listening on {HOST}:{PORT}.....")
 receive()
